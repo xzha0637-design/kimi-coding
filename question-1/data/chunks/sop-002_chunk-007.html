@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><title>数据库DBA On-Call SOP — 四、升级流程</title></head>
+<body>
+<header>
+<h1>数据库DBA On-Call SOP</h1>
+<p>文档编号：SOP-002 | 版本：v4.1 | 最后更新：2026-02-20</p>
+<p>适用范围：DBA团队全体值班人员，涵盖MySQL、PostgreSQL、Redis、MongoDB</p>
+</header>
+<main>
+<h2>四、升级流程</h2>
+<h3>四、升级流程</h3>
+<p>DBA值班遇到以下情况需立即升级：一、主库故障需要进行主从切换；二、数据丢失或数据不一致；三、核心业务数据库完全不可用；四、存在数据安全风险如SQL注入攻击痕迹。升级路径为：值班DBA到DBA团队负责人到基础架构总监。主从切换操作必须由两名DBA共同确认后执行，切换前需通知所有关联业务方。数据恢复操作需在隔离环境中先行验证恢复方案的正确性。所有P0级数据库故障需在五分钟内升级。</p>
+</main>
+</body>
+</html>

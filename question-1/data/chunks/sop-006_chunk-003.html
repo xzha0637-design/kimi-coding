@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><title>数据平台 On-Call SOP — 场景二：Flink实时任务异常</title></head>
+<body>
+<header>
+<h1>数据平台 On-Call SOP</h1>
+<p>文档编号：SOP-006 | 版本：v3.5 | 最后更新：2026-02-28</p>
+<p>适用范围：数据平台团队全体值班人员，覆盖数据仓库、实时计算、数据治理</p>
+</header>
+<main>
+<h2>三、常见故障处理</h2>
+<h3>场景二：Flink实时任务异常</h3>
+<p>Flink任务出现消费延迟持续增长或Checkpoint失败时，首先通过Flink Dashboard查看任务的运行状态和反压情况。如果是全链路反压，可能是下游Sink写入慢或数据倾斜导致某个SubTask处理不过来。通过查看各SubTask的处理速率定位瓶颈。Checkpoint失败通常与State过大有关，检查State的大小趋势和Checkpoint超时设置。对于数据倾斜问题，临时方案是增加并行度或调整Key的分布。如果任务完全失败需要重启，确认从最近的Checkpoint或Savepoint恢复，避免数据丢失或重复消费。重启后需验证数据一致性。</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><title>SRE基础设施 On-Call SOP — 场景四：CI/CD流水线大面积失败</title></head>
+<body>
+<header>
+<h1>SRE基础设施 On-Call SOP</h1>
+<p>文档编号：SOP-004 | 版本：v5.0 | 最后更新：2026-03-05
+        <p>适用范围：SRE团队全体值班人员，覆盖Kubernetes集群、云资源、CI/CD流水线
+    </p></p></header>
+<main>
+<h2>三、常见故障处理</h2>
+<h3>场景四：CI/CD流水线大面积失败</h3>
+<p>多个项目的CI/CD流水线同时失败时，首先排除基础设施层面的问题。检查Jenkins/GitLab Runner的Agent节点是否正常运行，构建节点的磁盘空间是否充足，Docker镜像仓库是否可访问。如果是依赖拉取失败，检查内部Maven仓库或npm Registry的可用性。如果是Docker构建失败，检查Docker Daemon状态和镜像拉取网络。流水线失败不影响已部署的生产服务，但会阻塞新功能上线和紧急修复的发布，因此需要尽快修复。
+
+        <h3>场景五：云资源配额不足
+        <p>当自动伸缩无法创建新实例或Kubernetes无法调度Pod时，可能是云资源配额耗尽。检查当前区域的实例配额、vCPU配额、EIP配额等。通过云厂商控制台或API查看配额使用情况。临时方案包括：释放闲置资源、在其他可用区创建实例、申请配额提升（通常需要数小时审批）。长期方案是建立配额监控和预警机制，在配额使用超过百分之八十时提前扩容或申请提升。
+
+        <h2>四、升级流程
+        <p>SRE值班遇到以下情况需立即升级：一、Kubernetes控制平面组件（API Server、Etcd、Controller Manager）不可用；二、多可用区同时故障；三、核心Ingress网关完全不可用；四、数据中心网络分区。升级路径：值班SRE到SRE团队负责人到基础架构VP。P0级基础设施故障需在三分钟内升级，因为基础设施故障通常影响所有上层服务。
+
+        <h2>五、禁止操作
+        <p>以下操作严格禁止：一、在生产集群直接执行kubectl delete node；二、未经审批修改生产环境的Terraform配置并apply；三、在高峰期进行Kubernetes版本升级；四、直接修改Etcd数据；五、删除生产环境的命名空间（namespace）；六、在未确认影响范围的情况下修改NetworkPolicy；七、关闭生产环境的监控告警。
+
+        <h2>六、工具与命令参考
+        <p>SRE常用工具：Kubernetes管理使用kubectl和k9s终端UI工具。基础设施编排使用Terraform和Pulumi。配置管理使用Ansible。监控使用Prometheus加Grafana加Thanos技术栈。日志使用ELK或Loki技术栈。告警使用AlertManager和PagerDuty。混沌工程使用ChaosMesh进行故障注入测试。集群诊断使用kubeadm和etcdctl。成本管理使用Kubecost分析资源使用效率。
+    </p></h2></p></h2></p></h2></p></h3></p>
+</main>
+</body>
+</html>

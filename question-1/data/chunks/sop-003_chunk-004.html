@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><title>前端Web On-Call SOP & 故障处理指南 — 场景三：页面加载性能下降</title></head>
+<body>
+<header>
+<h1>前端Web On-Call SOP</h1>
+<p>文档编号：SOP-003 | 版本：v2.8 | 最后更新：2026-02-15</p>
+<p>适用范围：前端Web团队全体值班人员，覆盖PC端&amp;移动端H5&amp;小程序WebView</p>
+</header>
+<main>
+<h2>三、常见故障处理</h2>
+<h3>场景三：页面加载性能下降</h3>
+<p>当LCP指标超过阈值时,通过监控平台分析性能下降的时间节点和影响范围。常见原因：一、打包体积过大,新功能引入了大量第三方库;二、图片未优化,大尺寸图片未使用WebP格式或未做懒加载;三、关键渲染路径阻塞,同步加载了非必要的CSS或JS资源;四、接口响应慢导致数据渲染延迟。排查工具：使用Lighthouse进行页面审计,使用Chrome Performance面板分析渲染时间线,使用webpack-bundle-analyzer分析包体积。临时优化方案：开启Gzip/Brotli压缩、启用HTTP/2 Server Push、对非核心模块做懒加载。</p>
+</main>
+</body>
+</html>

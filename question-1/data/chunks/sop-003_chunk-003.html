@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><title>前端Web On-Call SOP & 故障处理指南 — 场景二：JS错误率突增</title></head>
+<body>
+<header>
+<h1>前端Web On-Call SOP</h1>
+<p>文档编号：SOP-003 | 版本：v2.8 | 最后更新：2026-02-15</p>
+<p>适用范围：前端Web团队全体值班人员，覆盖PC端&amp;移动端H5&amp;小程序WebView</p>
+</header>
+<main>
+<h2>三、常见故障处理</h2>
+<h3>场景二：JS错误率突增</h3>
+<p>Sentry告警显示JS错误数量突增时,首先在Sentry中查看新增错误的堆栈信息和影响用户数。按浏览器版本、操作系统、页面路径等维度分析错误分布。如果错误集中在某个浏览器版本,可能是兼容性问题,需要检查是否使用了该浏览器不支持的API。如果错误集中在某个页面,检查该页面最近的代码变更。对于"Script error"类型的跨域脚本错误,需要确认静态资源服务器的CORS配置。对于"ChunkLoadError"类型的错误,通常是用户在版本更新后访问了旧版本缓存的页面,需要配置合理的缓存策略和版本回退机制。</p>
+</main>
+</body>
+</html>
