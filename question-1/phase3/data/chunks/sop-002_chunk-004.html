@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><title>数据库DBA On-Call SOP — 场景三：磁盘空间告急</title></head>
+<body>
+<header>
+<h1>数据库DBA On-Call SOP</h1>
+<p>文档编号：SOP-002 | 版本：v4.1 | 最后更新：2026-02-20</p>
+<p>适用范围：DBA团队全体值班人员，涵盖MySQL、PostgreSQL、Redis、MongoDB</p>
+</header>
+<main>
+<h2>三、常见故障处理</h2>
+<h3>场景三：磁盘空间告急</h3>
+<p>磁盘空间使用率超过百分之八十五时需要立即处理。首先确认空间占用来源：数据文件、Binlog、慢查询日志、临时文件。如果是Binlog占用过大，检查expire_logs_days设置，必要时手动执行PURGE BINARY LOGS清理过期Binlog。如果是某个表数据增长异常，检查是否有批量写入任务未按预期清理历史数据。临时释放空间的方式包括：清理已过期的Binlog、压缩或删除旧的慢查询日志、清理临时文件。对于InnoDB表，即使删除了大量数据，数据文件也不会自动缩小，需要执行OPTIMIZE TABLE或使用pt-online-schema-change重建表来回收空间。紧急情况下如果磁盘即将写满，需要立即停止所有非核心写入。</p>
+</main>
+</body>
+</html>

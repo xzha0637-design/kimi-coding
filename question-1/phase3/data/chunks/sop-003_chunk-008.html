@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><title>前端Web On-Call SOP & 故障处理指南 — 五、禁止操作</title></head>
+<body>
+<header>
+<h1>前端Web On-Call SOP</h1>
+<p>文档编号：SOP-003 | 版本：v2.8 | 最后更新：2026-02-15</p>
+<p>适用范围：前端Web团队全体值班人员，覆盖PC端&amp;移动端H5&amp;小程序WebView</p>
+</header>
+<main>
+<h2>五、禁止操作</h2>
+<h3>五、禁止操作</h3>
+<p>以下操作严格禁止：一、在生产环境直接修改CDN上的静态资源文件;二、在故障处理期间发布新版本(除非是紧急hotfix);三、未经代码审查直接修改线上配置;四、清除CDN全部缓存(应使用URL级别精确刷新);五、在HTML中直接内联大量JS代码绕过发布流程;六、修改全局公共组件而不通知其他业务线;七、在用户浏览器中执行eval或其他不安全的动态代码。</p>
+</main>
+</body>
+</html>

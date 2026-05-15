@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><title>移动客户端 On-Call SOP — 二、监控指标</title></head>
+<body>
+<header>
+<h1>移动客户端 On-Call SOP</h1>
+<p>文档编号：SOP-007 | 版本：v2.6 | 最后更新：2026-02-25</p>
+<p>适用范围：移动客户端团队全体值班人员，覆盖iOS、Android、Flutter跨平台</p>
+</header>
+<main>
+<h2>二、监控指标</h2>
+<h3>二、监控指标</h3>
+<p>移动客户端监控体系分为稳定性、性能和业务三个维度。稳定性指标：崩溃率需控制在千分之二以内，Android ANR率需控制在千分之一以内，iOS Watchdog Kill率需控制在千分之五以内。这些指标通过Firebase Crashlytics和Bugly采集。性能指标：冷启动时间需控制在两秒以内，页面帧率需保持在五十五帧以上，内存峰值不超过平台限制的百分之七十，网络请求成功率不低于百分之九十九。业务指标：核心页面的打开率、关键流程的完成率、推送到达率和点击率。所有指标按版本号、设备型号、操作系统版本、网络类型等维度细分。低端设备和弱网环境的指标需要单独关注。监控数据通过自研SDK上报，大盘展示在Grafana中。</p>
+</main>
+</body>
+</html>

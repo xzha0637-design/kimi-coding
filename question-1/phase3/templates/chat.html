@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On-Call 助手</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f0f2f5; }
+        .container { max-width: 780px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; }
+        .header { background: #fff; padding: 16px 20px; border-bottom: 1px solid #e0e0e0; text-align: center; }
+        .header h1 { font-size: 20px; }
+        .header .sub { font-size: 12px; color: #888; }
+        .messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+        .msg { max-width: 85%; padding: 12px 16px; border-radius: 10px; line-height: 1.6; font-size: 14px; white-space: pre-wrap; word-break: break-word; }
+        .msg.user { align-self: flex-end; background: #4a90d9; color: #fff; }
+        .msg.assistant { align-self: flex-start; background: #fff; border: 1px solid #e0e0e0; }
+        .tool-call { align-self: flex-start; max-width: 85%; background: #fffbe6; border: 1px solid #ffe58f; border-radius: 8px; padding: 10px 14px; font-size: 13px; }
+        .tool-call summary { cursor: pointer; font-weight: 600; color: #b8860b; }
+        .tool-call pre { margin-top: 8px; padding: 8px; background: #fff; border: 1px solid #eee; border-radius: 4px; font-size: 11px; max-height: 200px; overflow-y: auto; white-space: pre-wrap; }
+        .input-area { background: #fff; padding: 16px 20px; border-top: 1px solid #e0e0e0; display: flex; gap: 8px; }
+        .input-area input { flex: 1; padding: 12px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; }
+        .input-area input:focus { border-color: #4a90d9; }
+        .input-area button { padding: 12px 20px; background: #4a90d9; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; }
+        .input-area button:hover { background: #3a7bc8; }
+        .input-area button:disabled { background: #aaa; cursor: not-allowed; }
+        .loading { align-self: flex-start; padding: 8px 14px; color: #888; font-size: 13px; }
+        .error { align-self: center; padding: 10px 16px; background: #fff2f0; border: 1px solid #ffccc7; border-radius: 8px; color: #cf1322; font-size: 13px; }
+        .examples { font-size: 12px; color: #aaa; margin-top: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>On-Call 值班助手</h1>
+            <div class="sub">Phase 3 — Agent · 工具调用透明可见</div>
+        </div>
+        <div class="messages" id="messages">
+            <div class="examples" style="text-align:center;margin-top:40px;">
+                试试问：<br>
+                "数据库主从延迟超过30秒怎么处理？"<br>
+                "服务 OOM 了怎么办？"<br>
+                "P0 故障的响应流程是什么？"<br>
+                "怀疑有人入侵了系统"<br>
+                "推荐结果质量下降了"
+            </div>
+        </div>
+        <div class="input-area">
+            <input type="text" id="input" placeholder="输入你的 On-Call 问题…" autofocus>
+            <button id="send" onclick="send()">发送</button>
+        </div>
+    </div>
+
+    <script>
+        const messages = document.getElementById('messages');
+        const input = document.getElementById('input');
+        const sendBtn = document.getElementById('send');
+        let history = [];
+
+        input.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+
+        function addMsg(role, text) {
+            const div = document.createElement('div');
+            div.className = 'msg ' + role;
+            div.textContent = text;
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function addFileRead(filename) {
+            const div = document.createElement('div');
+            div.className = 'tool-call';
+            div.innerHTML = `📄 读取 ${filename}`;
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function escapeHtml(s) {
+            return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+
+        async function send() {
+            const q = input.value.trim();
+            if (!q) return;
+            input.value = '';
+            sendBtn.disabled = true;
+
+            // Remove examples placeholder
+            const ex = messages.querySelector('.examples');
+            if (ex) ex.remove();
+
+            addMsg('user', q);
+            history.push({ role: 'user', content: q });
+
+            const loading = document.createElement('div');
+            loading.className = 'loading';
+            loading.textContent = '思考中...';
+            messages.appendChild(loading);
+            messages.scrollTop = messages.scrollHeight;
+
+            try {
+                const resp = await fetch('/v3/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messages: history })
+                });
+                const data = await resp.json();
+                loading.remove();
+
+                if (data.error) {
+                    const err = document.createElement('div');
+                    err.className = 'error';
+                    err.textContent = '错误: ' + data.error;
+                    messages.appendChild(err);
+                } else {
+                    // Show files read
+                    if (data.files_read) {
+                        for (const f of data.files_read) {
+                            addFileRead(f);
+                        }
+                    }
+                    addMsg('assistant', data.answer);
+                    history.push({ role: 'assistant', content: data.answer });
+                }
+            } catch (e) {
+                loading.remove();
+                const err = document.createElement('div');
+                err.className = 'error';
+                err.textContent = '网络错误: ' + e.message;
+                messages.appendChild(err);
+            }
+            sendBtn.disabled = false;
+            input.focus();
+        }
+    </script>
+</body>
+</html>
